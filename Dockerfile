@@ -13,6 +13,7 @@ RUN pip install "poetry==$POETRY_VERSION"
 RUN apk update && apk add --no-cache libffi-dev gcc\
     musl-dev python3-dev postgresql-dev\
     && poetry config virtualenvs.create false\
-    && poetry install --no-interaction --no-ansi
+    && poetry install --no-interaction --no-ansi \
+    && poetry update
 
 COPY . /usr/src/app
