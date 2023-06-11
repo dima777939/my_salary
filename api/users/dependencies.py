@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
-from .schemas import TokenData
+from .schemas import TokenData, UserBase
 from .crud import get_user
 from .utils import SECRET_KEY, ALGORITHM
 
@@ -32,8 +32,24 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 
 async def get_current_active_user(
-    current_user: Annotated[UserValid, Depends(get_current_user)]
+    current_user: Annotated[UserBase, Depends(get_current_user)]
 ):
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+
+async def get_current_staff_user(
+    current_user: Annotated[UserBase, Depends(get_current_active_user)]
+):
+    if not current_user.is_staff:
+        raise HTTPException(status_code=400, detail="No access")
+    return current_user
+
+
+async def get_current_admin(
+    current_user: Annotated[UserBase, Depends(get_current_active_user)]
+):
+    if not current_user.is_superuser:
+        raise HTTPException(status_code=400, detail="No access, only admin")
     return current_user
