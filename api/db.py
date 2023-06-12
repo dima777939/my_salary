@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 
 from databases import Database
-from sqlalchemy.orm import declarative_base
 
 
 env_path = Path(".") / ".env"
@@ -17,7 +16,5 @@ DB_HOST = environ.get("POSTGRES_HOST", "db")
 DB_NAME = environ.get("POSTGRES_DB", "database")
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:5432/{DB_NAME}"
 
-
-Base = declarative_base()
 
 database = Database(DATABASE_URL)
